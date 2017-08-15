@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  	xmlns:mock="http://www.mulesoft.org/schema/mule/mock" 
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+	xmlns="http://www.mulesoft.org/schema/mule/core" 
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/mock http://www.mulesoft.org/schema/mule/mock/current/mule-mock.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd">
+    <munit:config name="munit" doc:name="MUnit configuration"/>
+    
+    <spring:beans>
+        <spring:import resource="classpath:order-systems.xml"/>
+    </spring:beans>
+    <munit:test name="processOrders_payloadReturnsTwoElementOfTypeJavaMap_True" description="calling processOrders Flow returns payload containing Two Key Value pairs of type javaMap">
+        <munit:set payload="#[[{'orderID':444,&#160;'location':'worldwide','price':44.04},&#160;{'orderID':555,&#160;'location':'worldwide','price':55.05},&#160;{'orderID':333,&#160;'location':'national','price':33.03}]]" doc:name="Set Message: Payload contains Internation and Domestic Orders"/>
+        <flow-ref name="processOrders" doc:name="processOrders"/>
+        <munit:assert-true message="FAILED:&#160;&#160;Expected&#160;payload's&#160;datatype&#160;to&#160;be&#160;Java&#160;Map,&#160;but&#160;found&#160;#[payload.getClass().getName()]&#160;instead!!" condition="#[payload is java.util.Map]" doc:name="Assert True Validate that payloads dataType is javaMap"/>
+        <munit:assert-on-equals message="FAILED: Expected payload to contain 2 key/value pairs but #[payload.size()] instead" expectedValue="#[2]" actualValue="#[payload.size()]" doc:name="Assert Equals: Payload contains 2 key value pairs"/>
+    </munit:test>
+</mule>
