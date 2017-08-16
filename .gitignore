@@ -50,3 +50,4 @@ src/main/api/.repository/
 #Additional
 .mule/
 reports/
+catalog/
